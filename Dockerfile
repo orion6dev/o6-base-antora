@@ -13,9 +13,13 @@ RUN apk update && \
         ttf-dejavu \
         ttf-droid \
         ttf-freefont \
-        ttf-liberation && \
-    yarn cache clean && \
-    yarn global add @asciidoctor/core asciidoctor-plantuml
+        ttf-liberation \
+        ruby \
+        ruby-dev \
+        build-base && \
+    gem install asciidoctor asciidoctor-diagram && \
+    apk del build-base ruby-dev && \
+    yarn cache clean
 
 # Optionally set the working directory
 WORKDIR /documents
