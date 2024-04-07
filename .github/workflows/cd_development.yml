@@ -41,23 +41,6 @@ jobs:
           --username automation@orion6dev.com \
           --password $GITHUB_TOKEN
 
-        docker buildx . \
-          --build-arg RELEASE_TAG=$PreReleaseTag \
-          --label org.opencontainers.image.created=$(date --rfc-3339=seconds) \
-          --label org.opencontainers.image.title="Antora Base Image" \
-          --label org.opencontainers.image.description="Base Docker image for Antora" \
-          --label org.opencontainers.image.url="https://github.com/orion6dev/${{ github.event.repository.name }}" \
-          --label org.opencontainers.image.source="https://github.com/orion6dev/${{ github.event.repository.name }}" \
-          --label org.opencontainers.image.version="${{ steps.gitversion.outputs.semVer }}" \
-          --label org.opencontainers.image.revision="${{ github.sha }}" \
-          --label org.opencontainers.image.vendor="orion6dev" \
-          --label org.opencontainers.image.licenses="MIT" \
-          --label org.opencontainers.image.version.informational="${{ steps.gitversion.outputs.informationalVersion }}" \
-          --tag ghcr.io/orion6dev/${{ github.event.repository.name }}:${{ steps.gitversion.outputs.semVer }} \
-          --file Dockerfile
+        docker version
+        docker buildx version
 
-        docker tag ghcr.io/orion6dev/${{ github.event.repository.name }}:${{ steps.gitversion.outputs.semVer }} \
-          ghcr.io/orion6dev/${{ github.event.repository.name }}:dev
-
-        docker push ghcr.io/orion6dev/${{ github.event.repository.name }}:${{ steps.gitversion.outputs.semVer }}
-        docker push ghcr.io/orion6dev/${{ github.event.repository.name }}:dev
