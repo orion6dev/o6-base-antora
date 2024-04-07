@@ -37,19 +37,17 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        docker login ghcr.io \
-          --username automation@orion6dev.com \
-          --password-stdin <<< "$GITHUB_TOKEN"
-      
+        echo "$GITHUB_TOKEN" | docker login ghcr.io --username automation@orion6dev.com --password-stdin
+        
         # Create and use a new buildx builder instance which will
         # be automatically used for subsequent buildx commands.
         docker buildx create --use
         
-        # Starting a build using docker buildx
-        docker buildx build \
+        # Starting a build using docker buildx, ensuring the context is clearly provided
+        docker buildx build . \
           --platform linux/amd64 \
           --build-arg RELEASE_TAG=$PreReleaseTag \
-          --label org.opencontainers.image.created=$(date --rfc-3339=seconds) \
+          --label org.opencontainers.image.created=$(date --iso-8601=seconds) \
           --label org.opencontainers.image.title="Antora Base Image" \
           --label org.opencontainers.image.description="Base Docker image for Antora" \
           --label org.opencontainers.image.url="https://github.com/orion6dev/${{ github.event.repository.name }}" \
@@ -61,6 +59,4 @@ jobs:
           --label org.opencontainers.image.version.informational="${{ steps.gitversion.outputs.informationalVersion }}" \
           --tag ghcr.io/orion6dev/${{ github.event.repository.name }}:${{ steps.gitversion.outputs.semVer }} \
           --output type=image,push=true \
-          --file Dockerfile \
-          .
-
+          --file Dockerfile
