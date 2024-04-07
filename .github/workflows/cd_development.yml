@@ -41,7 +41,7 @@ jobs:
           --username automation@orion6dev.com \
           --password $GITHUB_TOKEN
 
-        docker build . \
+        docker buildx . \
           --build-arg RELEASE_TAG=$PreReleaseTag \
           --label org.opencontainers.image.created=$(date --rfc-3339=seconds) \
           --label org.opencontainers.image.title="Antora Base Image" \
