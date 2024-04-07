@@ -46,7 +46,7 @@ jobs:
         docker buildx create --use
         
         # Starting a build using docker buildx
-        docker buildx build . \
+        docker buildx build \
           --platform linux/amd64 \
           --build-arg RELEASE_TAG=$PreReleaseTag \
           --label org.opencontainers.image.created=$(date --rfc-3339=seconds) \
@@ -61,5 +61,6 @@ jobs:
           --label org.opencontainers.image.version.informational="${{ steps.gitversion.outputs.informationalVersion }}" \
           --tag ghcr.io/orion6dev/${{ github.event.repository.name }}:${{ steps.gitversion.outputs.semVer }} \
           --output type=image,push=true \
-          --file Dockerfile
+          --file Dockerfile \
+          .
 
