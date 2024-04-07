@@ -39,8 +39,8 @@ jobs:
       run: |
         docker login ghcr.io \
           --username automation@orion6dev.com \
-          --password $GITHUB_TOKEN
-
+          --password-stdin <<< "$GITHUB_TOKEN"
+      
         # Create and use a new buildx builder instance which will
         # be automatically used for subsequent buildx commands.
         docker buildx create --use
@@ -62,7 +62,4 @@ jobs:
           --tag ghcr.io/orion6dev/${{ github.event.repository.name }}:${{ steps.gitversion.outputs.semVer }} \
           --output type=image,push=true \
           --file Dockerfile
-      
-        # Note: The 'docker tag' and 'docker push' commands are not needed with buildx when 'push=true' is specified.
-        # buildx will push the image directly to the registry as part of the build process.
 
