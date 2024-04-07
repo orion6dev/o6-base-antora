@@ -38,11 +38,19 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         echo "$GITHUB_TOKEN" | docker login ghcr.io --username automation@orion6dev.com --password-stdin
-        
+
         # Create and use a new buildx builder instance which will
         # be automatically used for subsequent buildx commands.
         docker buildx create --use
-        
+
+        # Prepare tags
+        SEMVER_TAG="ghcr.io/orion6dev/${{ github.event.repository.name }}:${{ steps.gitversion.outputs.semVer }}"
+        DEV_TAG="ghcr.io/orion6dev/${{ github.event.repository.name }}:dev"
+        TAGS="$SEMVER_TAG"
+        if [[ "${GITHUB_REF##*/}" == "develop" ]]; then
+          TAGS="$TAGS -t $DEV_TAG"
+        fi
+
         # Starting a build using docker buildx, ensuring the context is clearly provided
         docker buildx build . \
           --platform linux/amd64 \
@@ -57,6 +65,7 @@ jobs:
           --label org.opencontainers.image.vendor="orion6dev" \
           --label org.opencontainers.image.licenses="MIT" \
           --label org.opencontainers.image.version.informational="${{ steps.gitversion.outputs.informationalVersion }}" \
-          --tag ghcr.io/orion6dev/${{ github.event.repository.name }}:${{ steps.gitversion.outputs.semVer }} \
+          -t $TAGS \
           --output type=image,push=true \
           --file Dockerfile
+    
