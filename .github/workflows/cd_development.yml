@@ -41,6 +41,28 @@ jobs:
           --username automation@orion6dev.com \
           --password $GITHUB_TOKEN
 
-        docker version
-        docker buildx version
+        # Create and use a new buildx builder instance which will
+        # be automatically used for subsequent buildx commands.
+        docker buildx create --use
+        
+        # Starting a build using docker buildx
+        docker buildx build . \
+          --platform linux/amd64 \
+          --build-arg RELEASE_TAG=$PreReleaseTag \
+          --label org.opencontainers.image.created=$(date --rfc-3339=seconds) \
+          --label org.opencontainers.image.title="Antora Base Image" \
+          --label org.opencontainers.image.description="Base Docker image for Antora" \
+          --label org.opencontainers.image.url="https://github.com/orion6dev/${{ github.event.repository.name }}" \
+          --label org.opencontainers.image.source="https://github.com/orion6dev/${{ github.event.repository.name }}" \
+          --label org.opencontainers.image.version="${{ steps.gitversion.outputs.semVer }}" \
+          --label org.opencontainers.image.revision="${{ github.sha }}" \
+          --label org.opencontainers.image.vendor="orion6dev" \
+          --label org.opencontainers.image.licenses="MIT" \
+          --label org.opencontainers.image.version.informational="${{ steps.gitversion.outputs.informationalVersion }}" \
+          --tag ghcr.io/orion6dev/${{ github.event.repository.name }}:${{ steps.gitversion.outputs.semVer }} \
+          --output type=image,push=true \
+          --file Dockerfile
+      
+        # Note: The 'docker tag' and 'docker push' commands are not needed with buildx when 'push=true' is specified.
+        # buildx will push the image directly to the registry as part of the build process.
 
