@@ -1,7 +1,7 @@
-﻿# Use the latest Antora image as the base
-FROM antora/antora:latest as dist
+﻿# Use a specific version of the Antora image as the base
+FROM antora/antora:2.3.4 as dist
 
-# Update the package list and install necessary dependencies
+# Update the package list, install necessary dependencies, and perform cleanup in a single layer
 RUN apk update && \
     apk add --no-cache \
         git \
@@ -18,10 +18,11 @@ RUN apk update && \
         ruby-dev \
         build-base && \
     gem install asciidoctor asciidoctor-diagram && \
-    apk del build-base ruby-dev && \
-    yarn cache clean
+    apk del --purge build-base ruby-dev && \
+    yarn cache clean && \
+    rm -rf /var/cache/apk/*
 
-# Optionally set the working directory
+# Set the working directory
 WORKDIR /documents
 
 # Set the entry point for the Antora command
