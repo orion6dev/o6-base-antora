@@ -1,0 +1,11 @@
+docker build `
+  --build-arg GITHUB_USER=$env:GH_USER `
+  --build-arg GITHUB_TOKEN=$env:GH_TOKEN `
+  --build-arg BUILD_CONFIGURATION=Release `
+  --build-arg PROJECT_NAME='Doc.Proc' `
+  --build-arg INF_VER='local.build' `
+  --build-arg SEMVER='1' `
+  --build-arg RELEASE_TAG='T' `
+  --build-arg BASE_IMAGE=orion6docker/latex-base-image:latest `
+  --no-cache `
+  -t ghcr.io/orion6dev/o6-base-antora:local .
