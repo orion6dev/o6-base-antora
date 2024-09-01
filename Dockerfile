@@ -16,11 +16,21 @@ RUN apk update && \
         ttf-liberation \
         ruby \
         ruby-dev \
-        build-base && \
+        build-base \
+        nodejs \
+        npm \
+        openjdk11 && \
+    npm install -g @mermaid-js/mermaid-cli && \
     gem install asciidoctor asciidoctor-diagram && \
+    echo "server: true" >> /root/.asciidoctorconfig && \
     apk del --purge build-base ruby-dev && \
     yarn cache clean && \
     rm -rf /var/cache/apk/*
+
+# Install PlantUML
+RUN curl -L https://sourceforge.net/projects/plantuml/files/plantuml.jar/download -o /usr/local/bin/plantuml.jar && \
+    echo "java -jar /usr/local/bin/plantuml.jar \$@" > /usr/local/bin/plantuml && \
+    chmod +x /usr/local/bin/plantuml
 
 # Set the working directory
 WORKDIR /documents
