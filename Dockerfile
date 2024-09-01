@@ -1,5 +1,5 @@
 ﻿# Use a specific version of the Antora image as the base
-FROM antora/antora:2.3.4 as dist
+FROM antora/antora:3.1.9 AS dist
 
 # Update the package list, install necessary dependencies, and perform cleanup in a single layer
 RUN apk update && \
