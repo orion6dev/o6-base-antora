@@ -27,8 +27,8 @@ RUN apk update && \
     yarn cache clean && \
     rm -rf /var/cache/apk/*
 
-# Install PlantUML
-RUN curl -L https://sourceforge.net/projects/plantuml/files/plantuml.jar/download -o /usr/local/bin/plantuml.jar && \
+# Install PlantUML using a specific version from GitHub releases
+RUN curl -L https://github.com/plantuml/plantuml/releases/download/v1.2024.6/plantuml-1.2024.6.jar -o /usr/local/bin/plantuml.jar && \
     echo "java -jar /usr/local/bin/plantuml.jar \$@" > /usr/local/bin/plantuml && \
     chmod +x /usr/local/bin/plantuml
 
